@@ -1,8 +1,13 @@
 const express = require('express');
+const mongoose = require("mongoose");
 const app = express();
 const PORT = 3000;
 
-app.get('/post', (req,res)=> {
+const DB_URL = '';
+mongoose.connect(DB_URL, {useNewUrlParser: true, UseUnifiedTopology: true})
+    .then(() => console.log('Connected to db!'));
+
+app.get('/post', (req, res) => {
     res.status(200).json()
 })
 
