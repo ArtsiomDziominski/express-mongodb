@@ -2,7 +2,8 @@ const express = require('express');
 const mongoose = require("mongoose");
 const Post = require("./models/post");
 const bodyParser = require('body-parser');
-const CreateUsers = require("./models/create-user");
+const CreateUsers = require("./models/user");
+const GetUsersName = require("./models/user");
 const app = express();
 const PORT = 2000;
 
@@ -19,31 +20,35 @@ app.use((req, res, next) => {
 mongoose.connect(DB_URL, {useNewUrlParser: true, UseUnifiedTopology: true})
     .then(() => console.log('Connected to db!'));
 
-const urlencodedParser = bodyParser.urlencoded({ extended: false })
+const urlencodedParser = bodyParser.urlencoded({extended: false})
 
 app.post('/post', urlencodedParser, function (req, res) {
-    console.log(req.body)
     const post = new Post({title: req.body.title, description: req.body.description});
     post
         .save()
         .then((result) => res
             .status(201)
             .send(result))
-        .catch((e) => console.log(e))
 })
 
 app.post('/create-user', urlencodedParser, function (req, res) {
-    console.log(req.body)
-    const post = new CreateUsers({login: req.body.login, password: req.body.password});
-    post
+    const createUser = new CreateUsers({login: req.body.login, password: req.body.password});
+    createUser
         .save()
         .then((result) => res
             .status(201)
             .send(result))
         .catch((e) => {
             res.status(400).send(e)
-            console.log(e)
         })
+})
+
+app.post('/get-user-name', urlencodedParser, function (req, res) {
+    const userName = req.body.login;
+    GetUsersName
+        .findOne({login: userName})
+        .then((user) => res.status(400).send(user.login))
+        .catch((err) => res.status(200).send(err))
 })
 
 app.get('/', function (req, res) {
