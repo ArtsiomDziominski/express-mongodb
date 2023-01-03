@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require("mongoose");
 const Post = require("./models/post");
 const bodyParser = require('body-parser');
+const CreateUsers = require("./models/create-user");
 const app = express();
 const PORT = 2000;
 
@@ -29,6 +30,20 @@ app.post('/post', urlencodedParser, function (req, res) {
             .status(201)
             .send(result))
         .catch((e) => console.log(e))
+})
+
+app.post('/create-user', urlencodedParser, function (req, res) {
+    console.log(req.body)
+    const post = new CreateUsers({login: req.body.login, password: req.body.password});
+    post
+        .save()
+        .then((result) => res
+            .status(201)
+            .send(result))
+        .catch((e) => {
+            res.status(400).send(e)
+            console.log(e)
+        })
 })
 
 app.get('/', function (req, res) {
