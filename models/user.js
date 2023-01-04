@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const createUserSchema = new Schema({
     login: {
         type: String,
+        unique: true,
         required: true
     },
     password: {
@@ -12,6 +13,6 @@ const createUserSchema = new Schema({
     },
 }, {timestamps: true})
 
-const CreateUsers = mongoose.model('User', createUserSchema)
+const User = mongoose.model('User', createUserSchema)
 
-module.exports = CreateUsers;
+module.exports = User;
