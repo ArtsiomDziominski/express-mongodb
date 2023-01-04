@@ -22,6 +22,10 @@ mongoose.connect(DB_URL, {useNewUrlParser: true, UseUnifiedTopology: true})
 
 const urlencodedParser = bodyParser.urlencoded({extended: false})
 
+app.get('/', function (req, res) {
+    res.send('Create Post\n Artsiom Dziominski')
+})
+
 app.post('/post', urlencodedParser, function (req, res) {
     const post = new Post({title: req.body.title, description: req.body.description});
     post
@@ -35,9 +39,9 @@ app.post('/create-user', urlencodedParser, function (req, res) {
     const createUser = new CreateUsers({login: req.body.login, password: req.body.password});
     createUser
         .save()
-        .then((result) => res
-            .status(201)
-            .send(result))
+        .then((result) => {
+            res.status(201).send(result)
+        })
         .catch((e) => {
             res.status(400).send(e)
         })
@@ -47,12 +51,22 @@ app.post('/get-user-name', urlencodedParser, function (req, res) {
     const userName = req.body.login;
     GetUsersName
         .findOne({login: userName})
-        .then((user) => res.status(400).send(user.login))
+        .then((user) => {
+            res.status(400).send(user.login)
+            console.log(user)
+        })
         .catch((err) => res.status(200).send(err))
 })
 
-app.get('/', function (req, res) {
-    res.send('Create Post\n Artsiom Dziominski')
+app.post('/login-user', urlencodedParser, function (req, res) {
+    const user = req.body;
+    GetUsersName
+        .findOne({login: user.login, password: user.password})
+        .then((user) => {
+            console.log(user)
+            res.status(200).send(user)
+        })
+        .catch((err) => res.status(400).send(err))
 })
 
 app.listen(PORT, () => console.log('Server started on port ', PORT))
