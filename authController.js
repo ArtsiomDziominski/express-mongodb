@@ -67,8 +67,6 @@ class authController {
     async getUserInfo(req, res) {
         const user = {
             id: req.user.id,
-            phone: req.body.phone,
-            mail: req.body.mail,
         }
 
         User.findById({_id: user.id})
