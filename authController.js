@@ -26,7 +26,7 @@ class authController {
             return res.status(400).send(messageServer.USER_REPEAT)
         }
         const hashPassword = bcrypt.hashSync(newUser.password, 3);
-        const createUser = new User({login: newUser.login, password: hashPassword, phone: '', mail: ''});
+        const createUser = new User({login: newUser.login, password: hashPassword, phone: ' ', mail: ' '});
         createUser
             .save()
             .then(() => {
@@ -61,6 +61,22 @@ class authController {
         User.findByIdAndUpdate({_id: user.id}, {phone: user.phone, mail: user.mail})
             .then((result) => {
                 return res.status(200).send(result)
+            })
+    }
+
+    async getUserInfo(req, res) {
+        const user = {
+            id: req.user.id,
+            phone: req.body.phone,
+            mail: req.body.mail,
+        }
+
+        User.findById({_id: user.id})
+            .then((result) => {
+                return res.status(200).send(result)
+            })
+            .catch((err)=> {
+                return res.status(400).send(err)
             })
     }
 
