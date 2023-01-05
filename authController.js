@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const messageServer = require("./message-server");
 const immutable = require("./const");
 const jwt = require("jsonwebtoken");
+const {secret} = require("./config")
 
 
 const generateAccessToken = (id) => {
@@ -25,7 +26,7 @@ class authController {
             return res.status(400).send(messageServer.USER_REPEAT)
         }
         const hashPassword = bcrypt.hashSync(newUser.password, 3);
-        const createUser = new User({login: newUser.login, password: hashPassword});
+        const createUser = new User({login: newUser.login, password: hashPassword, phone: '', mail: ''});
         createUser
             .save()
             .then(() => {
@@ -48,6 +49,19 @@ class authController {
                     res.status(400).send(messageServer.PASSWORD_ERROR)
             })
             .catch(() => res.status(400).send(messageServer.LOGIN_ERROR))
+    }
+
+    async updateUserContacts(req, res) {
+        const user = {
+            id: req.user.id,
+            phone: req.body.phone,
+            mail: req.body.mail,
+        }
+
+        User.findByIdAndUpdate({_id: user.id}, {phone: user.phone, mail: user.mail})
+            .then((result) => {
+                return res.status(200).send(result)
+            })
     }
 
     async createPost(req, res) {
