@@ -14,7 +14,7 @@ app.use((req, res, next) => {
 
 app.use('/auth', authRouter)
 
-const DB_URL = '';
+const DB_URL = 'mongodb+srv://admin:adslm200aaa@createpost.tjuk3z0.mongodb.net/posts?retryWrites=true&w=majority';
 
 const start = async () => {
     try {
