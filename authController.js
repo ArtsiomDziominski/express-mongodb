@@ -1,6 +1,15 @@
 const User = require("./models/user");
 const bcrypt = require('bcryptjs');
 const messageServer = require("./message-server");
+const jwt = require("jsonwebtoken");
+const {secret} = require("./config");
+
+const generateAccessToken = (id) => {
+    const payload = {
+        id
+    }
+    return jwt.sign(payload, secret, {expiresIn: "48h"})
+}
 
 class authController {
     async createUser(req, res) {
@@ -34,8 +43,9 @@ class authController {
             .findOne({login: userLogin.login})
             .then((user) => {
                 const validPassword = bcrypt.compareSync(userLogin.password, user.password);
-                validPassword ?
-                    res.status(200).send({loginAccept: messageServer.LOGIN_ACCEPT, jwt:''}) :
+                const token = generateAccessToken(user._id);
+                return validPassword ?
+                    res.status(200).send({loginAccept: messageServer.LOGIN_ACCEPT, jwt: token}) :
                     res.status(400).send(messageServer.PASSWORD_ERROR)
             })
             .catch(() => res.status(400).send(messageServer.LOGIN_ERROR))
