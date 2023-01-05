@@ -1,8 +1,9 @@
 const User = require("./models/user");
 const bcrypt = require('bcryptjs');
 const messageServer = require("./message-server");
+const immutable = require("./const");
 const jwt = require("jsonwebtoken");
-const {secret} = require("./config");
+
 
 const generateAccessToken = (id) => {
     const payload = {
@@ -13,7 +14,12 @@ const generateAccessToken = (id) => {
 
 class authController {
     async createUser(req, res) {
-        const newUser = req.body
+        const newUser = req.body;
+        if (newUser.login.length <= immutable.LOGIN_LENGTH) {
+            return res.status(400).send(`${messageServer.INVALID_LOGIN} ${immutable.LOGIN_LENGTH} символов`)
+        } else if (newUser.password.length <= immutable.PASSWORD_LENGTH) {
+            return res.status(400).send(`${messageServer.INVALID_PASSWORD} ${immutable.PASSWORD_LENGTH} символов`)
+        }
         const hashPassword = bcrypt.hashSync(newUser.password, 3);
         const createUser = new User({login: newUser.login, password: hashPassword});
         createUser
