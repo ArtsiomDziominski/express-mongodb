@@ -1,4 +1,5 @@
 const User = require("./models/user");
+const Post = require("./models/post");
 const bcrypt = require('bcryptjs');
 const messageServer = require("./message-server");
 const immutable = require("./const");
@@ -73,7 +74,7 @@ class authController {
             .then((result) => {
                 return res.status(200).send(result)
             })
-            .catch((err)=> {
+            .catch((err) => {
                 return res.status(400).send(err)
             })
     }
@@ -82,9 +83,35 @@ class authController {
         const post = new Post({title: req.body.title, description: req.body.description});
         post
             .save()
-            .then((result) => res
-                .status(201)
-                .send(result))
+            .then((result) => {
+                return res.status(201).send(result)
+            })
+            .catch((err) => {
+                return res.status(400).send(err)
+            })
+    }
+
+    async getPosts(req, res) {
+        Post
+            .find()
+            .then((allPosts) => {
+                return res.status(201).send(allPosts)
+            })
+            .catch((err) => {
+                return res.status(400).send(err)
+            })
+    }
+
+    async getPost(req, res) {
+        const id = req.body.id;
+        Post
+            .findById(id)
+            .then((post) => {
+                return res.status(201).send(post)
+            })
+            .catch((err) => {
+                return res.status(400).send(err)
+            })
     }
 }
 
