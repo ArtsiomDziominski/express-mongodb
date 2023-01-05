@@ -1,13 +1,16 @@
 const User = require("./models/user");
+const bcrypt = require('bcryptjs');
+const messageServer = require("./message-server");
 
 class authController {
     async createUser(req, res) {
         const newUser = req.body
-        const createUser = new User({login: newUser.login, password: newUser.password});
+        const hashPassword = bcrypt.hashSync(newUser.password, 3);
+        const createUser = new User({login: newUser.login, password: hashPassword});
         createUser
             .save()
-            .then((result) => {
-                res.status(201).send(result)
+            .then(() => {
+                res.status(201).send(messageServer.REGISTRATION_ACCEPT)
             })
             .catch((e) => {
                 res.status(400).send(e)
@@ -26,14 +29,16 @@ class authController {
     }
 
     async loginUser(req, res) {
-        const user = req.body;
+        const userLogin = req.body;
         User
-            .findOne({login: user.login, password: user.password})
+            .findOne({login: userLogin.login})
             .then((user) => {
-                console.log(user)
-                res.status(200).send(user)
+                const validPassword = bcrypt.compareSync(userLogin.password, user.password);
+                validPassword ?
+                    res.status(200).send({loginAccept: messageServer.LOGIN_ACCEPT, jwt:''}) :
+                    res.status(400).send(messageServer.PASSWORD_ERROR)
             })
-            .catch((err) => res.status(400).send(err))
+            .catch(() => res.status(400).send(messageServer.LOGIN_ERROR))
     }
 
     async createPost(req, res) {
