@@ -12,7 +12,7 @@ router.post('/login-user', urlencodedParser, controller.loginUser)
 router.post('/update-user-contacts', authMiddleware, urlencodedParser, controller.updateUserContacts)
 router.get('/get-user-info', authMiddleware, urlencodedParser, controller.getUserInfo)
 router.post('/create-post', authMiddleware, urlencodedParser, controller.createPost)
-router.post('/get-posts', urlencodedParser, controller.getPosts)
+router.get('/get-posts', urlencodedParser, controller.getPosts)
 router.post('/get-post', urlencodedParser, controller.getPost)
 
 module.exports = router
