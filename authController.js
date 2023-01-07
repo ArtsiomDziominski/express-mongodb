@@ -95,7 +95,7 @@ class authController {
         Post
             .find()
             .then((allPosts) => {
-                return res.status(201).send(allPosts)
+                return res.status(200).send(allPosts)
             })
             .catch((err) => {
                 return res.status(400).send(err)
