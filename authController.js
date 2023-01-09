@@ -107,7 +107,37 @@ class authController {
         Post
             .findById(id)
             .then((post) => {
-                return res.status(201).send(post)
+                return res.status(200).send(post)
+            })
+            .catch((err) => {
+                return res.status(400).send(err)
+            })
+    }
+
+    async updatePost(req, res) {
+        const post = {
+            id: req.body.id,
+            title: req.body.title,
+            description: req.body.description,
+        }
+
+        Post.findByIdAndUpdate({_id: post.id}, {title: post.title, description: post.description})
+            .then((result) => {
+                return res.status(200).send(result)
+            })
+            .catch((err) => {
+                return res.status(400).send(err)
+            })
+    }
+
+    async deletePost(req, res) {
+        const post = {
+            id: req.body.id,
+        }
+
+        Post.findByIdAndDelete({_id: post.id})
+            .then((result) => {
+                return res.status(200).send(result)
             })
             .catch((err) => {
                 return res.status(400).send(err)
