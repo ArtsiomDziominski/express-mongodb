@@ -65,14 +65,20 @@ class authController {
             })
     }
 
-    async getUserInfo(req, res) {
+    async getUser(req, res) {
         const user = {
             id: req.user.id,
         }
 
         User.findById({_id: user.id})
             .then((result) => {
-                return res.status(200).send(result)
+                const userResult = {
+                    id:result._id,
+                    login: result.login,
+                    mail: result.mail,
+                    phone: result.phone,
+                }
+                return res.status(200).send(userResult)
             })
             .catch((err) => {
                 return res.status(400).send(err)
