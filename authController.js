@@ -86,7 +86,8 @@ class authController {
     }
 
     async createPost(req, res) {
-        const post = new Post({title: req.body.title, description: req.body.description});
+        const bodyPost = req.body;
+        const post = new Post({title: bodyPost.title, description: bodyPost.description, author: bodyPost.author});
         post
             .save()
             .then((result) => {

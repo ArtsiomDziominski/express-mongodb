@@ -10,6 +10,10 @@ const postSchema = new Schema({
         type: String,
         required: true
     },
+    author: {
+        type: String,
+        required: true
+    },
 }, {timestamps: true})
 
 const Post = mongoose.model('Post', postSchema)
