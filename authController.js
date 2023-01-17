@@ -73,7 +73,7 @@ class authController {
         User.findById({_id: user.id})
             .then((result) => {
                 const userResult = {
-                    id:result._id,
+                    id: result._id,
                     login: result.login,
                     mail: result.mail,
                     phone: result.phone,
@@ -86,8 +86,8 @@ class authController {
     }
 
     async createPost(req, res) {
-        const bodyPost = req.body;
-        const post = new Post({title: bodyPost.title, description: bodyPost.description, author: bodyPost.author});
+        const postNew = req.body;
+        const post = new Post(postNew);
         post
             .save()
             .then((result) => {
