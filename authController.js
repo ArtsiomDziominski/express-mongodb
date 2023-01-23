@@ -5,6 +5,7 @@ const messageServer = require("./message-server");
 const immutable = require("./const");
 const jwt = require("jsonwebtoken");
 const {secret} = require("./config")
+const getUserName = require("./helpers/getUserName");
 
 
 const generateAccessToken = (id) => {
@@ -73,7 +74,7 @@ class authController {
         User.findById({_id: user.id})
             .then((result) => {
                 const userResult = {
-                    id:result._id,
+                    id: result._id,
                     login: result.login,
                     mail: result.mail,
                     phone: result.phone,
@@ -86,8 +87,18 @@ class authController {
     }
 
     async createPost(req, res) {
+        const userId = req.user.id
         const bodyPost = req.body;
-        const post = new Post({title: bodyPost.title, description: bodyPost.description, author: bodyPost.author});
+
+        const author = await getUserName(userId);
+
+        const post = await new Post({
+            title: bodyPost.title,
+            description: bodyPost.description,
+            author: author,
+            userId: userId,
+            usersLiked: [],
+        });
         post
             .save()
             .then((result) => {
@@ -127,6 +138,32 @@ class authController {
         Post.findByIdAndUpdate({_id: post.id}, postUpdate)
             .then((result) => {
                 return res.status(200).send(result)
+            })
+            .catch((err) => {
+                return res.status(400).send(err)
+            })
+    }
+
+    async addLikePost(req, res) {
+        const userId = req.user.id
+        const post = req.body;
+        let usersListLiked = [];
+
+        await Post.findById({_id: post.id})
+            .then((resultPost) => {
+                usersListLiked = resultPost.usersLiked;
+            })
+
+        const author = await getUserName(userId);
+
+        const userRepeatIndex = usersListLiked.indexOf(author);
+        userRepeatIndex < 0? usersListLiked.unshift(author): usersListLiked.splice(userRepeatIndex, 1)
+
+        await Post.findByIdAndUpdate({_id: post.id}, {usersLiked: usersListLiked})
+            .then((post) => {
+                console.log(post)
+                post.usersLiked = usersListLiked;
+                return res.status(200).send(post)
             })
             .catch((err) => {
                 return res.status(400).send(err)
