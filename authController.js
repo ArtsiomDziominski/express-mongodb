@@ -99,6 +99,7 @@ class authController {
             userId: userId,
             usersLiked: [],
         });
+
         post
             .save()
             .then((result) => {
