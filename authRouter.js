@@ -15,6 +15,7 @@ router.post('/create-post', authMiddleware, urlencodedParser, controller.createP
 router.get('/get-posts', urlencodedParser, controller.getPosts)
 router.post('/get-post', urlencodedParser, controller.getPost)
 router.post('/update-post', urlencodedParser, controller.updatePost)
+router.post('/add-like-post', authMiddleware, urlencodedParser, controller.addLikePost)
 router.post('/delete-post', urlencodedParser, controller.deletePost)
 
 module.exports = router

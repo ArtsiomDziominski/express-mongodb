@@ -14,6 +14,10 @@ const postSchema = new Schema({
         type: String,
         required: true
     },
+    usersLiked: {
+        type: Array,
+        required: true
+    },
 }, {timestamps: true})
 
 const Post = mongoose.model('Post', postSchema)
