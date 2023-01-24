@@ -136,7 +136,7 @@ class authController {
     async updatePost(req, res) {
         const postUpdate = req.body;
 
-        Post.findByIdAndUpdate({_id: post.id}, postUpdate)
+        Post.findByIdAndUpdate({_id: postUpdate.id}, postUpdate)
             .then((result) => {
                 return res.status(200).send(result)
             })
